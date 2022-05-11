@@ -1,6 +1,6 @@
 {
   "name": "build-for-cjs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "type": "module",
@@ -8,7 +8,9 @@
   "keywords": [],
   "author": "iyegoroff <iegoroff@gmail.com>",
   "license": "MIT",
-  "files": ["test"],
+  "files": [
+    "test"
+  ],
   "dependencies": {
     "ts-morph": "^14.0.0"
   },
