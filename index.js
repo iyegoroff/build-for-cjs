@@ -44,9 +44,11 @@ project.emit().then(() => {
         })
       })
 
-      if (!require(process.argv[3] || process.cwd())) {
-        throw new Error('probably broken?')
-      }
+      setTimeout(() => {
+        if (!require(process.argv[3] || process.cwd())) {
+          throw new Error('probably broken?')
+        }
+      }, 500)
     } else {
       throw err
     }
