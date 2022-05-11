@@ -3,13 +3,12 @@
   "version": "0.0.2",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "bin": "index.js",
   "keywords": [],
   "author": "iyegoroff <iegoroff@gmail.com>",
   "license": "MIT",
   "files": [
-    "test"
+    "test.js"
   ],
   "dependencies": {
     "ts-morph": "^14.0.0"
