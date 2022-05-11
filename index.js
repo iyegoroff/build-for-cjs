@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 
 const project = new tsmorph.Project({
-  tsConfigFilePath: process.argv[1],
+  tsConfigFilePath: process.argv[2],
 })
 
 const folder = project.compilerOptions.get().outDir
@@ -43,6 +43,8 @@ project.emit().then(() => {
           }
         })
       })
+
+      require('./test.js')
     } else {
       throw err
     }
