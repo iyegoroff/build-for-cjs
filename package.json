@@ -8,6 +8,7 @@
   "keywords": [],
   "author": "iyegoroff <iegoroff@gmail.com>",
   "license": "MIT",
+  "files": ["test"],
   "dependencies": {
     "ts-morph": "^14.0.0"
   },
