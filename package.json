@@ -1,0 +1,17 @@
+{
+  "name": "build-for-cjs",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "bin": "index.js",
+  "keywords": [],
+  "author": "iyegoroff <iegoroff@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ts-morph": "^14.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "*"
+  }
+}
