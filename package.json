@@ -7,6 +7,9 @@
   "keywords": [],
   "author": "iyegoroff <iegoroff@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "postversion": "git push && git push --tags && npm publish"
+  },
   "dependencies": {
     "ts-morph": "^14.0.0"
   },
