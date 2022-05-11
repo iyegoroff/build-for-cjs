@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const tsmorph = require('ts-morph')
 const fs = require('fs')
 const path = require('path')
