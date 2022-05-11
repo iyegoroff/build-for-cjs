@@ -44,7 +44,9 @@ project.emit().then(() => {
         })
       })
 
-      require('./test.js')
+      if (!require(process.argv[3] || process.cwd())) {
+        throw new Error('probably broken?')
+      }
     } else {
       throw err
     }

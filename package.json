@@ -7,9 +7,6 @@
   "keywords": [],
   "author": "iyegoroff <iegoroff@gmail.com>",
   "license": "MIT",
-  "files": [
-    "test.js"
-  ],
   "dependencies": {
     "ts-morph": "^14.0.0"
   },
