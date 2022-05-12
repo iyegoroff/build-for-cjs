@@ -2,55 +2,76 @@
 const tsmorph = require('ts-morph')
 const fs = require('fs')
 const path = require('path')
+const process = require('process')
+const { promisify } = require('util')
+
+const rename = promisify(fs.rename)
+const readdir = promisify(fs.readdir)
+
+const cjsImportName = (name) => name.replace(/\.js$/, '.cjs')
 
 const project = new tsmorph.Project({
   tsConfigFilePath: process.argv[2],
 })
 
-const folder = project.compilerOptions.get().outDir
+const checkOutDir = () => {
+  const { outDir } = project.compilerOptions.get()
 
-if (!folder) {
-  throw new Error('specify outDir in tsconfig!')
+  if (!outDir) {
+    throw new Error('specify outDir in tsconfig!')
+  }
+
+  return outDir
 }
 
-project.compilerOptions.set({
-  noEmitOnError: false,
-  sourceMap: false,
-})
+const compile = (outDir) => {
+  const errors = project.emitToMemory().getDiagnostics()
 
-project.getSourceFiles().forEach((file) => {
-  ;[...file.getImportDeclarations(), ...file.getExportDeclarations()].forEach(
-    (decl) => {
-      decl.setModuleSpecifier(
-        decl
-          .getModuleSpecifier()
-          .getText()
-          .replace('.js', '.cjs')
-          .replace(/'/g, '')
-      )
-    }
-  )
-})
+  if (errors.length !== 0) {
+    throw new Error(project.formatDiagnosticsWithColorAndContext(errors))
+  }
 
-project.emit().then(() => {
-  fs.readdir(folder, (err, files) => {
-    if (!err) {
-      files.forEach((file) => {
-        const name = path.join(folder, file)
-        fs.rename(name, name.replace('.js', '.cjs'), (err) => {
-          if (err) {
-            throw err
-          }
-        })
-      })
-
-      setTimeout(() => {
-        if (!require(process.argv[3] || process.cwd())) {
-          throw new Error('probably broken?')
-        }
-      }, 500)
-    } else {
-      throw err
-    }
+  project.compilerOptions.set({
+    noEmitOnError: false,
+    sourceMap: false,
   })
-})
+
+  project.getSourceFiles().forEach((file) => {
+    ;[...file.getImportDeclarations(), ...file.getExportDeclarations()].forEach(
+      (decl) => {
+        decl.setModuleSpecifier(
+          cjsImportName(decl.getModuleSpecifier().getText().replace(/'/g, ''))
+        )
+      }
+    )
+  })
+
+  return project.emit().then(() => outDir)
+}
+
+const renameImports = (outDir) =>
+  readdir(outDir)
+    .then((files) =>
+      Promise.all(
+        files.map((file) => {
+          const name = path.join(outDir, file)
+          return rename(name, cjsImportName(name))
+        })
+      )
+    )
+    .then(() => {
+      if (!require(process.argv[3] || process.cwd())) {
+        throw new Error('probably broken?')
+      }
+    })
+
+const handleError = (err) => {
+  console.log(err.message)
+  process.exitCode = 1
+}
+
+Promise.resolve()
+  .then(checkOutDir)
+  .then(compile)
+  .then(renameImports)
+  .catch(handleError)
